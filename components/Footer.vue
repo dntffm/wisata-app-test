@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-grey-lighten-5">
+    <div class="bg-grey-lighten-5 mt-auto">
         <v-container>
             <div>
                 <span>
