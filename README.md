@@ -1,8 +1,11 @@
-# Nuxt 3 Minimal Starter
-
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+# Wisata App Test
 
 ## Setup
+
+Clone the project into your local:
+``` Https
+git clone https://github.com/dntffm/wisata-app-test.git
+cd wisata-app-test
 
 Make sure to install the dependencies:
 
@@ -72,4 +75,8 @@ yarn preview
 bun run preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## Implemented Page Route
+```
+# /stays/{property-slug}/?checkin={checkinDate}&number_of_room={numberOfRoom}&checkout={checkoutDate}&guest_per_room={guestPerRoom}
+# example: http://localhost:3000/stays/the-langham-jakarta-9001948244/?guest_per_room=2&number_of_room=1&checkin=2024-06-25&checkout=2024-06-26
+```
