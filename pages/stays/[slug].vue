@@ -11,26 +11,25 @@
                                 </v-avatar>
                             </div>
                         </v-col>
-    
+
                         <v-col lg="8">
                             <div v-if="propertyPending">
                                 <v-skeleton-loader color="secondary" type="article"></v-skeleton-loader>
                             </div>
                             <div v-else>
-    
+
                                 <h3>{{ property.name }}</h3>
                                 <div class="text-body-2">
                                     <p class="py-1 text-capitalize text-grey-darken-1">{{ property.type }}</p>
                                     <p>{{ property.catalog.address_full }}</p>
                                 </div>
                                 <div class="d-flex justify-start align-center py-2 text-body-2">
-                                    <v-progress-circular 
-                                        :model-value="property.catalog.review_rating" 
-                                        :color="ratingDesc(property.catalog.review_rating).color"
-                                    >
+                                    <v-progress-circular :model-value="property.catalog.review_rating"
+                                        :color="ratingDesc(property.catalog.review_rating).color">
                                         {{ property.catalog.review_rating }}
                                     </v-progress-circular>
-                                    <p class="ml-2">{{ ratingDesc(property.catalog.review_rating).text }} &middot; &nbsp;</p>
+                                    <p class="ml-2">{{ ratingDesc(property.catalog.review_rating).text }} &middot; &nbsp;
+                                    </p>
                                     <p>{{ property.catalog.review_count }} Reviews</p>
                                 </div>
                                 <div class="py-1 text-body-2">
@@ -40,11 +39,12 @@
                         </v-col>
                     </v-row>
                 </div>
-    
+
                 <div class="py-6" v-if="rooms.length < 1" style="height: 100%;">
                     <div class="d-flex flex-column align-center justify-center pa-4 text-grey-darken-2 ga-4">
                         <v-icon size="x-large" icon="mdi-progress-alert"></v-icon>
-                        <span class="text-body-1 font-medium">No available room on {{ checkinDate }} - {{ checkoutDate }} for {{ guestPerRoom }} guest(s) per room and {{ numberOfRoom }}</span>
+                        <span class="text-body-1 font-medium">No available room on {{ checkinDate }} - {{ checkoutDate }}
+                            for {{ guestPerRoom }} guest(s) per room and {{ numberOfRoom }}</span>
                     </div>
                 </div>
                 <div v-else>
@@ -54,27 +54,16 @@
                             <span class="text-body-2 font-weight-medium">Filter rooms by</span>
                         </div>
                         <div class="d-flex flex-row ga-2">
-                            <v-btn 
-                                @click="filters.free_breakfast=!filters.free_breakfast"
-                                :color="filters.free_breakfast === true ? 'blue' : ''"
-                                class="text-none"
-                                variant="outlined"
-                                rounded="xl"
-                                size="small"
-                                prepend-icon="mdi-silverware-fork-knife"
-                            >Free Breakfast</v-btn>
-                            <v-btn 
-                                @click="filters.free_cancellation=!filters.free_cancellation"
-                                :color="filters.free_cancellation === true ? 'blue' : ''"
-                                class="text-none"
-                                variant="outlined" 
-                                rounded="xl"
-                                size="small"
-                                prepend-icon="mdi-credit-card-check"
-                            >Free Cancellation</v-btn>
+                            <v-btn @click="filters.free_breakfast = !filters.free_breakfast"
+                                :color="filters.free_breakfast === true ? 'blue' : ''" class="text-none" variant="outlined"
+                                rounded="xl" size="small" prepend-icon="mdi-silverware-fork-knife">Free Breakfast</v-btn>
+                            <v-btn @click="filters.free_cancellation = !filters.free_cancellation"
+                                :color="filters.free_cancellation === true ? 'blue' : ''" class="text-none"
+                                variant="outlined" rounded="xl" size="small" prepend-icon="mdi-credit-card-check">Free
+                                Cancellation</v-btn>
                         </div>
                     </div>
-    
+
                     <v-row class="rooms-offer my-4 my-lg-6" :no-gutters="true" v-for="room in property.room">
                         <v-col class="room-images px-sm-4">
                             <v-img v-if="room.images.length < 1" :src="fallbackRoomImageUrl" class="bg-grey-lighten-2">
@@ -92,8 +81,8 @@
                                 </template>
                             </v-img>
                             <div class="images-grid" v-else>
-                                <div v-for="(image, index) in room.images.slice(0, 4)" :key="n"
-                                    :class="`${index === 0 ? 'parent' : 'children-' + index}`">
+                                <div @click="openImageDialog(room.images)" v-for="(image, index) in room.images.slice(0, 4)"
+                                    :key="n" :class="`cursor-pointer ${index === 0 ? 'parent' : 'children-' + index}`">
                                     <img class="" :src="Object.values(image.links)[2].href"
                                         style="width: 100%; height: 100%; object-fit: cover;" />
                                 </div>
@@ -107,7 +96,8 @@
                                         <div class="d-flex flex-row ga-2 align-center">
                                             <div v-if="room.bed_groups">
                                                 <v-icon size="x-small" icon="mdi-bed-king-outline"></v-icon>
-                                                <span class="pl-2">{{ Object.values(room.bed_groups)[0].description }}</span>
+                                                <span class="pl-2">{{ Object.values(room.bed_groups)[0].description
+                                                }}</span>
                                             </div>
                                             <div v-if="room.area">
                                                 <v-icon size="x-small" icon="mdi-square-opacity"></v-icon>
@@ -118,20 +108,34 @@
                                 </div>
                             </v-sheet>
                         </v-col>
-    
+
                         <v-col class="room-availability">
                             <v-sheet border="sm" class="rounded-bottom">
-                                <div v-for="(offer, index) in rooms.filter(item => item.room_data.id == room.id)" v-if="rooms.filter(item => item.room_data.id == room.id).length > 0">
+                                <div v-for="(offer, index) in rooms.filter(item => item.room_data.id == room.id)"
+                                    v-if="rooms.filter(item => item.room_data.id == room.id).length > 0">
                                     <AvailabilityRoom :offer="offer" />
                                 </div>
                                 <div v-else>
-                                    <NoRoomAvailable/>
+                                    <NoRoomAvailable />
                                 </div>
                             </v-sheet>
                         </v-col>
                     </v-row>
                 </div>
             </div>
+            <v-dialog v-model="imageModal" class="image-dialog">
+                <v-card>
+                    <v-container>
+                        <v-carousel>
+                            <v-carousel-item :src="Object.values(image.links)[2].href" cover
+                                v-for="image in imagesTemp"></v-carousel-item>
+                        </v-carousel>
+                    </v-container>
+                    <v-card-actions>
+                        <v-btn color="primary" block @click="imageModal = false">Close</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
         </v-container>
     </v-layout>
 </template>
@@ -140,12 +144,12 @@
 import { computed, ref, watch } from 'vue';
 
 const ratingDesc = (score) => {
-    if(score < 50) 
+    if (score < 50)
         return {
             color: 'red',
             text: 'Bad'
         }
-    else if(score < 80)
+    else if (score < 80)
         return {
             color: 'blue',
             text: 'So so'
@@ -162,6 +166,13 @@ let filters = reactive({
     free_breakfast: null,
     free_cancellation: null
 })
+
+let imageModal = ref(false)
+let imagesTemp = ref([])
+function openImageDialog(images) {
+    imageModal.value = true
+    imagesTemp.value = images
+}
 
 const fallbackRoomImageUrl = ref('https://wisata.app/img/fallback-room.png')
 
@@ -196,6 +207,10 @@ const { availabilityPending, data: rooms } = useFetch(availabilityUrl, {
 </script>
 
 <style>
+.cursor-pointer {
+    cursor: pointer;
+}
+
 .rounded-top {
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
@@ -211,6 +226,10 @@ const { availabilityPending, data: rooms } = useFetch(availabilityUrl, {
     grid-template-areas: "room-detail" "room-images" "room-availability";
 }
 
+.image-dialog {
+    width: auto;
+}
+
 @media (min-width: 600px) {
     .rooms-offer {
         grid-template:
@@ -221,6 +240,10 @@ const { availabilityPending, data: rooms } = useFetch(availabilityUrl, {
 
     .images-grid {
         border-radius: 10px;
+    }
+
+    .image-dialog {
+        width: 50%;
     }
 }
 
