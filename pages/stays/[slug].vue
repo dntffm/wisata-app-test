@@ -23,10 +23,13 @@
                                 <p>{{ property.catalog.address_full }}</p>
                             </div>
                             <div class="d-flex justify-start align-center py-2 text-body-2">
-                                <v-progress-circular :model-value="property.catalog.review_rating" color="purple">
+                                <v-progress-circular 
+                                    :model-value="property.catalog.review_rating" 
+                                    :color="ratingDesc(property.catalog.review_rating).color"
+                                >
                                     {{ property.catalog.review_rating }}
                                 </v-progress-circular>
-                                <p class="ml-2">Excellent &middot; &nbsp;</p>
+                                <p class="ml-2">{{ ratingDesc(property.catalog.review_rating).text }} &middot; &nbsp;</p>
                                 <p>{{ property.catalog.review_count }} Reviews</p>
                             </div>
                             <div class="py-1 text-body-2">
@@ -47,10 +50,24 @@
                         <span class="text-body-2 font-weight-medium">Filter rooms by</span>
                     </div>
                     <div class="d-flex flex-row ga-2">
-                        <v-btn class="text-none" variant="outlined" rounded="xl" size="small"
-                            prepend-icon="mdi-silverware-fork-knife">Free Breakfast</v-btn>
-                        <v-btn class="text-none" variant="outlined" rounded="xl" size="small"
-                            prepend-icon="mdi-credit-card-check">Free Cancellation</v-btn>
+                        <v-btn 
+                            @click="filters.free_breakfast=!filters.free_breakfast"
+                            :color="filters.free_breakfast === true ? 'blue' : ''"
+                            class="text-none"
+                            variant="outlined"
+                            rounded="xl"
+                            size="small"
+                            prepend-icon="mdi-silverware-fork-knife"
+                        >Free Breakfast</v-btn>
+                        <v-btn 
+                            @click="filters.free_cancellation=!filters.free_cancellation"
+                            :color="filters.free_cancellation === true ? 'blue' : ''"
+                            class="text-none"
+                            variant="outlined" 
+                            rounded="xl"
+                            size="small"
+                            prepend-icon="mdi-credit-card-check"
+                        >Free Cancellation</v-btn>
                     </div>
                 </div>
 
@@ -100,8 +117,11 @@
 
                     <v-col class="room-availability">
                         <v-sheet border="sm" class="rounded-bottom">
-                            <div v-for="(offer, index) in rooms.filter(item => item.room_data.id == room.id)">
+                            <div v-for="(offer, index) in rooms.filter(item => item.room_data.id == room.id)" v-if="rooms.filter(item => item.room_data.id == room.id).length > 0">
                                 <AvailabilityRoom :offer="offer" />
+                            </div>
+                            <div v-else>
+                                <NoRoomAvailable/>
                             </div>
                         </v-sheet>
                     </v-col>
@@ -112,7 +132,31 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
+
+const ratingDesc = (score) => {
+    if(score < 50) 
+        return {
+            color: 'red',
+            text: 'Bad'
+        }
+    else if(score < 80)
+        return {
+            color: 'blue',
+            text: 'So so'
+        }
+    else {
+        return {
+            color: 'purple',
+            text: 'Awesome'
+        }
+    }
+}
+
+let filters = reactive({
+    free_breakfast: null,
+    free_cancellation: null
+})
 
 const fallbackRoomImageUrl = ref('https://wisata.app/img/fallback-room.png')
 
@@ -125,6 +169,8 @@ const checkoutDate = route.query.checkout
 const guestPerRoom = route.query.guest_per_room
 const numberOfRoom = route.query.number_of_room
 
+
+
 const propertyUrl = `https://exterior-technical-test-api.vercel.app/property?id=${propertyId}&include=room`
 const { propertyPending, data: property } = useFetch(propertyUrl, {
     lazy: true,
@@ -133,7 +179,7 @@ const { propertyPending, data: property } = useFetch(propertyUrl, {
     }
 })
 
-const availabilityUrl = `https://exterior-technical-test-api.vercel.app/property/availability/9001948244?checkin=2024-06-01&checkout=2024-06-03&number_of_room=1&guest_per_room=2`
+const availabilityUrl = `https://exterior-technical-test-api.vercel.app/property/availability/${propertyId}?checkin=${checkinDate}&checkout=${checkoutDate}&number_of_room=${numberOfRoom}&guest_per_room=${guestPerRoom}`
 
 const { availabilityPending, data: rooms } = useFetch(availabilityUrl, {
     lazy: true,

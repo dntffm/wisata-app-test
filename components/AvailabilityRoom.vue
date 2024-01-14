@@ -19,7 +19,7 @@
                             props.offer.pricing_data.strikethrough_rate_nightly) }}% Today
                     </v-btn>
 
-                    <p class="text-caption text-decoration-line-through text-grey-lighten-1"
+                    <p class="text-body-1 text-decoration-line-through text-grey-lighten-1"
                         v-if="props.offer.pricing_data.strikethrough_rate_nightly > 0">
                         {{ formatIDR(props.offer.pricing_data.strikethrough_rate_nightly) }}
                     </p>
