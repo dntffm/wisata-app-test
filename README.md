@@ -1,5 +1,17 @@
 # Wisata App Test
 
+## Tech and Stack
+- Vuetify
+
+  Vuetify strictly adheres to the Material Design guidelines. Wisata app requires a design language that aligns with Material Design principles, Vuetify might be a good fit.
+
+- Nuxt 3
+
+  Vuetify, being designed specifically for Vue.js, works well with Nuxt.js. You can easily integrate Vuetify components into your Nuxt.js project, ensuring a cohesive and visually appealing user interface.
+- Vercel
+
+  Easy deploy Nuxt project (and the others frontend project) into the cloud environtment using vercel
+
 ## Setup
 
 Clone the project into your local:
